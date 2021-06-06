@@ -1,3 +1,8 @@
+import 'reflect-metadata';
+import 'express-async-errors';
+import '@shared/infra/typeorm';
+import '@shared/containers';
+
 import cors from 'cors';
 import express from 'express';
 
