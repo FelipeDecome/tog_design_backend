@@ -2,6 +2,7 @@ import { Article } from '@modules/articles/infra/typeorm/entities/Article';
 import { IArticlesRepository } from '@modules/articles/repositories/IArticlesRepository';
 import { ICategoriesRepository } from '@modules/articles/repositories/ICategoriesRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository';
+import { IStorageProvider } from '@shared/containers/providers/StorageProvider/models/IStorageProvider';
 import { AppError } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
@@ -11,6 +12,7 @@ interface IRequest {
   text: string;
   themes: string[];
   category_id: string;
+  coverFileName: string;
 }
 
 @injectable()
@@ -24,6 +26,9 @@ class CreateArticleService {
 
     @inject('CategoriesRepository')
     private categoriesRepository: ICategoriesRepository,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
   public async execute({
@@ -32,6 +37,7 @@ class CreateArticleService {
     text,
     themes,
     category_id,
+    coverFileName,
   }: IRequest): Promise<Article> {
     const findAuthor = await this.usersRepository.findById(author_id);
 
@@ -47,10 +53,13 @@ class CreateArticleService {
 
     const parsedThemes = themes.sort().join('|');
 
+    const filename = await this.storageProvider.saveFile(coverFileName);
+
     const article = await this.articlesRepository.create({
       author_id,
       title,
       text,
+      cover: filename,
       themes: parsedThemes,
       category_id,
     });

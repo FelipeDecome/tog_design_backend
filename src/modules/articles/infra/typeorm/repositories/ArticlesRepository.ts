@@ -37,7 +37,6 @@ class ArticlesRepository implements IArticlesRepository {
       where: {
         author_id,
       },
-      relations: ['author', 'category'],
     });
   }
 }

@@ -1,4 +1,5 @@
 import { CreateArticleService } from '@modules/articles/services/CreateArticleService';
+import { ListAuthorArticlesService } from '@modules/articles/services/ListAuthorArticlesService';
 import { ShowArticleService } from '@modules/articles/services/ShowArticleService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
@@ -16,6 +17,7 @@ class ArticlesController {
       text,
       themes,
       category_id,
+      coverFileName: request.file.filename,
     });
 
     return response.json(article);
@@ -33,6 +35,23 @@ class ArticlesController {
     });
 
     return response.json(article);
+  }
+
+  public async showByAuthor(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const author_id = request.user.id;
+
+    const listAuthorArticlesService = container.resolve(
+      ListAuthorArticlesService,
+    );
+
+    const articles = await listAuthorArticlesService.execute({
+      author_id,
+    });
+
+    return response.json(articles);
   }
 }
 

@@ -33,6 +33,9 @@ class Article {
   @Column()
   themes: string;
 
+  @Column()
+  cover: string;
+
   @Column('uuid')
   category_id: string;
 

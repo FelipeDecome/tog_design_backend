@@ -8,8 +8,10 @@ interface IRequest {
   id: string;
 }
 
-interface IArticleReponse extends Omit<Omit<Article, 'themes'>, 'author'> {
+interface IArticleReponse
+  extends Omit<Omit<Omit<Article, 'themes'>, 'author'>, 'cover'> {
   author_name: string;
+  cover_url: string;
   themes: string[];
 }
 
@@ -32,9 +34,10 @@ class ShowArticleService {
 
     /**
      * Should users define the preview Size?
+     * Move url parsing responsability to model
      */
 
-    const { author, ...rest } = article;
+    const { author, cover, ...rest } = article;
 
     return {
       article: {
@@ -42,6 +45,7 @@ class ShowArticleService {
         author_name: author.name,
         themes: article.themes.split('|'),
         text: user_id ? article.text : `${article.text.slice(0, 500)}...`,
+        cover_url: `${process.env.API_URL}/files/${cover}`,
       },
       bought: !!user_id,
     };

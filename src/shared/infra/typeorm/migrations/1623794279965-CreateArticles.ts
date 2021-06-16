@@ -29,6 +29,10 @@ export class CreateArticles1623794279965 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'cover',
+            type: 'varchar',
+          },
+          {
             name: 'category_id',
             type: 'uuid',
           },
