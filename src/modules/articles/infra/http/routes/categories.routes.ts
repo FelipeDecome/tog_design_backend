@@ -1,7 +1,10 @@
 import { Router } from 'express';
 
-const categoriesRoutes = Router();
+import { CategoriesController } from '../controllers/CategoriesController';
 
-categoriesRoutes.get('/', () => undefined);
+const categoriesRoutes = Router();
+const categoriesController = new CategoriesController();
+
+categoriesRoutes.get('/', categoriesController.index);
 
 export { categoriesRoutes };

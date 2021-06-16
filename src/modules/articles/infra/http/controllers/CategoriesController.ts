@@ -1,4 +1,4 @@
-import { IndexCategoriesService } from '@modules/services/IndexCategoriesService';
+import { IndexCategoriesService } from '@modules/articles/services/IndexCategoriesService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
