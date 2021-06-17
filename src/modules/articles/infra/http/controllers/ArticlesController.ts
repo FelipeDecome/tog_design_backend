@@ -1,13 +1,14 @@
 import { CreateArticleService } from '@modules/articles/services/CreateArticleService';
 import { ListAuthorArticlesService } from '@modules/articles/services/ListAuthorArticlesService';
 import { ShowArticleService } from '@modules/articles/services/ShowArticleService';
+import { parseMoneyToNumber } from '@shared/utils/parseMoneyToNumber';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 class ArticlesController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { id: author_id } = request.user;
-    const { title, text, themes, category_id } = request.body;
+    const { title, text, themes, category_id, price } = request.body;
 
     const createArticleService = container.resolve(CreateArticleService);
 
@@ -18,6 +19,7 @@ class ArticlesController {
       themes,
       category_id,
       coverFileName: request.file.filename,
+      price: parseMoneyToNumber(price),
     });
 
     return response.json(article);

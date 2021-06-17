@@ -5,6 +5,7 @@ interface ICreateArticleDTO {
   cover: string;
   themes: string;
   category_id: string;
+  price: number;
 }
 
 export { ICreateArticleDTO };

@@ -13,6 +13,7 @@ interface IRequest {
   themes: string[];
   category_id: string;
   coverFileName: string;
+  price: number;
 }
 
 @injectable()
@@ -38,6 +39,7 @@ class CreateArticleService {
     themes,
     category_id,
     coverFileName,
+    price,
   }: IRequest): Promise<Article> {
     const findAuthor = await this.usersRepository.findById(author_id);
 
@@ -62,6 +64,7 @@ class CreateArticleService {
       cover: filename,
       themes: parsedThemes,
       category_id,
+      price,
     });
 
     return article;

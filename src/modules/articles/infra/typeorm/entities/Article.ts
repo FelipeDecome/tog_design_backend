@@ -39,6 +39,9 @@ class Article {
   @Column('uuid')
   category_id: string;
 
+  @Column('numeric', { precision: 19, scale: 4 })
+  price: number;
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
   category: Category;

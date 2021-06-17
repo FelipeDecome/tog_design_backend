@@ -37,6 +37,12 @@ export class CreateArticles1623794279965 implements MigrationInterface {
             type: 'uuid',
           },
           {
+            name: 'price',
+            type: 'numeric',
+            precision: 19,
+            scale: 4,
+          },
+          {
             name: 'created_at',
             type: 'timestamp',
             default: 'now()',
