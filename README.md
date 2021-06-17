@@ -1,9 +1,6 @@
 # Projeto React desenvolvido para Tog.design
-<br/>
 
-## *Projeto em desenvolvimento* 💻
-
-<br/>
+### *Projeto em desenvolvimento* 💻
 
 ## Rodando o projeto 🚀
 
