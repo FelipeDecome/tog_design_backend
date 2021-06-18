@@ -1,6 +1,6 @@
 import { ICreateArticleDTO } from '@modules/articles/dtos/ICreateArticleDTO';
 import { IArticlesRepository } from '@modules/articles/repositories/IArticlesRepository';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, In, Repository } from 'typeorm';
 
 import { Article } from '../entities/Article';
 
@@ -29,6 +29,14 @@ class ArticlesRepository implements IArticlesRepository {
   public async findById(id: string): Promise<Article | undefined> {
     return this.ormRepository.findOne(id, {
       relations: ['author', 'category'],
+    });
+  }
+
+  public async findByIds(ids: string[]): Promise<Article[]> {
+    return this.ormRepository.find({
+      where: {
+        id: In(ids),
+      },
     });
   }
 
