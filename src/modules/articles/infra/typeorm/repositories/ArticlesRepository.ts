@@ -1,4 +1,5 @@
 import { ICreateArticleDTO } from '@modules/articles/dtos/ICreateArticleDTO';
+import { IFindBoughtArticle } from '@modules/articles/dtos/IFindBoughtArticle';
 import { IArticlesRepository } from '@modules/articles/repositories/IArticlesRepository';
 import { getRepository, In, Repository } from 'typeorm';
 
@@ -74,6 +75,20 @@ class ArticlesRepository implements IArticlesRepository {
       },
       relations: ['author'],
     });
+  }
+
+  public async findBoughtArticle({
+    article_id,
+    user_id,
+  }: IFindBoughtArticle): Promise<Article | undefined> {
+    return this.ormRepository
+      .createQueryBuilder('article')
+      .leftJoin('article.orders', 'order')
+      .where('article.id = :article_id AND order.user_id = :user_id', {
+        article_id,
+        user_id,
+      })
+      .getOne();
   }
 }
 

@@ -1,6 +1,7 @@
 import { Article } from '@modules/articles/infra/typeorm/entities/Article';
 import { IArticlesRepository } from '@modules/articles/repositories/IArticlesRepository';
 import { AppError } from '@shared/errors/AppError';
+import { limitTextSize } from '@shared/utils/limitTextSize';
 import { inject, injectable } from 'tsyringe';
 
 interface IRequest {
@@ -32,22 +33,29 @@ class ShowArticleService {
 
     if (!article) throw new AppError('Article not found.');
 
-    /**
-     * Should users define the preview Size?
-     * Move url parsing responsability to model
-     */
-
     const { author, cover, ...rest } = article;
+
+    let findBoughtArticle;
+
+    if (user_id)
+      findBoughtArticle = await this.articlesRepository.findBoughtArticle({
+        article_id: id,
+        user_id,
+      });
+
+    const text = findBoughtArticle
+      ? article.text
+      : `${limitTextSize(article.text, 1 / 5)}...`;
 
     return {
       article: {
         ...rest,
         author_name: author.name,
         themes: article.themes.split('|'),
-        text: user_id ? article.text : `${article.text.slice(0, 500)}...`,
+        text,
         cover_url: `${process.env.API_URL}/files/${cover}`,
       },
-      bought: !!user_id,
+      bought: !!findBoughtArticle,
     };
   }
 }
