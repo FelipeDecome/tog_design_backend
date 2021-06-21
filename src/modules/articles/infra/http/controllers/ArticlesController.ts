@@ -22,7 +22,7 @@ class ArticlesController {
       price: parseMoneyToNumber(price),
     });
 
-    return response.json(article);
+    return response.status(201).json(article);
   }
 
   public async show(request: Request, response: Response): Promise<Response> {

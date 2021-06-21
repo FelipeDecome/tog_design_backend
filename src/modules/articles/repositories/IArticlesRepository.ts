@@ -7,6 +7,7 @@ interface IArticlesRepository {
   findById(id: string): Promise<Article | undefined>;
   findByIds(ids: string[]): Promise<Article[]>;
   findByAuthorId(author_id: string): Promise<Article[]>;
+  findAllUsersBoughtArticles(user_id: string): Promise<Article[]>;
 }
 
 export { IArticlesRepository };

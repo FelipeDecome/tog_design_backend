@@ -21,7 +21,7 @@ class Order {
   @Column('numeric', { precision: 19, scale: 2 })
   total: number;
 
-  @ManyToMany(() => Article)
+  @ManyToMany(() => Article, article => article.orders)
   @JoinTable({
     name: 'order_to_articles',
     joinColumn: { name: 'order_id', referencedColumnName: 'id' },

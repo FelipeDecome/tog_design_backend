@@ -1,5 +1,6 @@
 import { articlesRoutes } from '@modules/articles/infra/http/routes/articles.routes';
 import { categoriesRoutes } from '@modules/articles/infra/http/routes/categories.routes';
+import { ordersRoutes } from '@modules/orders/infra/http/routes/orders.routes';
 import { sessionsRoutes } from '@modules/users/infra/http/routes/sessions.routes';
 import { usersRoutes } from '@modules/users/infra/http/routes/users.routes';
 import { Router } from 'express';
@@ -10,5 +11,6 @@ routes.use('/users', usersRoutes);
 routes.use('/sessions', sessionsRoutes);
 routes.use('/articles', articlesRoutes);
 routes.use('/categories', categoriesRoutes);
+routes.use('/orders', ordersRoutes);
 
 export { routes };
