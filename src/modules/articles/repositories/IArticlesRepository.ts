@@ -8,6 +8,7 @@ interface IArticlesRepository {
   findByIds(ids: string[]): Promise<Article[]>;
   findByAuthorId(author_id: string): Promise<Article[]>;
   findAllUsersBoughtArticles(user_id: string): Promise<Article[]>;
+  findAllArticles(): Promise<Article[]>;
 }
 
 export { IArticlesRepository };

@@ -33,6 +33,7 @@ articlesRoutes.post(
   articlesController.create,
 );
 articlesRoutes.get('/', ensureAuthenticated, articlesController.showByAuthor);
+articlesRoutes.get('/all', articlesController.index);
 
 articlesRoutes.get(
   '/bought',

@@ -1,4 +1,5 @@
 import { CreateArticleService } from '@modules/articles/services/CreateArticleService';
+import { ListArticlesService } from '@modules/articles/services/ListArticlesService';
 import { ListAuthorArticlesService } from '@modules/articles/services/ListAuthorArticlesService';
 import { ShowArticleService } from '@modules/articles/services/ShowArticleService';
 import { parseMoneyToNumber } from '@shared/utils/parseMoneyToNumber';
@@ -52,6 +53,14 @@ class ArticlesController {
     const articles = await listAuthorArticlesService.execute({
       author_id,
     });
+
+    return response.json(articles);
+  }
+
+  public async index(request: Request, response: Response): Promise<Response> {
+    const listArticlesService = container.resolve(ListArticlesService);
+
+    const articles = await listArticlesService.execute();
 
     return response.json(articles);
   }

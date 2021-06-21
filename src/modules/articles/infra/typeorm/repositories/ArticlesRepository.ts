@@ -66,6 +66,15 @@ class ArticlesRepository implements IArticlesRepository {
       .where('order.user_id = :id', { id: user_id })
       .getRawMany();
   }
+
+  public async findAllArticles(): Promise<Article[]> {
+    return this.ormRepository.find({
+      order: {
+        created_at: 'DESC',
+      },
+      relations: ['author'],
+    });
+  }
 }
 
 export { ArticlesRepository };
