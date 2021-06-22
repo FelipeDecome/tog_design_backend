@@ -1,9 +1,11 @@
+import { Order } from '@modules/orders/infra/typeorm/entities/Order';
 import { User } from '@modules/users/infra/typeorm/entities/User';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
@@ -38,6 +40,12 @@ class Article {
 
   @Column('uuid')
   category_id: string;
+
+  @Column('numeric', { precision: 19, scale: 4 })
+  price: number;
+
+  @ManyToMany(() => Order, order => order.articles)
+  orders: Order[];
 
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
