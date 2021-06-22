@@ -21,6 +21,9 @@ class Order {
   @Column('numeric', { precision: 19, scale: 2 })
   total: number;
 
+  @Column()
+  coupon_id?: string;
+
   @ManyToMany(() => Article, article => article.orders)
   @JoinTable({
     name: 'order_to_articles',

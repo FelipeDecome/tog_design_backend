@@ -16,6 +16,7 @@ ordersRoutes.post(
           .min(1)
           .required()
           .items(Joi.string().uuid().required()),
+        coupon: Joi.string().optional(),
       },
     },
     { abortEarly: false },

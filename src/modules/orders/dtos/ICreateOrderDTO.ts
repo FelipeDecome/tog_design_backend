@@ -4,6 +4,7 @@ interface ICreateOrderDTO {
   user_id: string;
   articles: Article[];
   total: number;
+  coupon_id?: string;
 }
 
 export { ICreateOrderDTO };

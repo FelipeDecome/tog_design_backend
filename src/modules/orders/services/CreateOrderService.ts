@@ -1,4 +1,5 @@
 import { IArticlesRepository } from '@modules/articles/repositories/IArticlesRepository';
+import { ICouponsRepository } from '@modules/coupons/repositories/ICouponsRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository';
 import { AppError } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
@@ -9,7 +10,7 @@ import { IOrdersRepository } from '../repositories/IOrdersRepository';
 interface IRequest {
   user_id: string;
   article_ids: string[];
-  // coupom: string;
+  coupon?: string;
 }
 
 @injectable()
@@ -23,9 +24,16 @@ class CreateOrderService {
 
     @inject('ArticlesRepository')
     private articlesRepository: IArticlesRepository,
+
+    @inject('CouponsRepository')
+    private couponsRepository: ICouponsRepository,
   ) {}
 
-  public async execute({ user_id, article_ids }: IRequest): Promise<Order> {
+  public async execute({
+    user_id,
+    article_ids,
+    coupon,
+  }: IRequest): Promise<Order> {
     const findUser = await this.usersRepository.findById(user_id);
 
     if (!findUser) throw new AppError('User not found');
@@ -44,6 +52,13 @@ class CreateOrderService {
         throw new AppError('You can not buy an article you already have.');
     });
 
+    let findCoupon;
+    if (coupon) {
+      findCoupon = await this.couponsRepository.findByCoupon(coupon);
+    }
+
+    const discount = findCoupon ? findCoupon.discount : 0;
+
     const articles_authors = articles.map(article => article.author_id);
     if (articles_authors.includes(user_id))
       throw new AppError('Authors can not buy their own articles');
@@ -53,10 +68,13 @@ class CreateOrderService {
       0,
     );
 
+    const totalWithDiscount = total - total * discount;
+
     const order = await this.ordersRepository.create({
       user_id,
       articles,
-      total,
+      coupon_id: findCoupon?.id,
+      total: totalWithDiscount,
     });
 
     return order;
