@@ -52,13 +52,6 @@ class CreateOrderService {
         throw new AppError('You can not buy an article you already have.');
     });
 
-    let findCoupon;
-    if (coupon) {
-      findCoupon = await this.couponsRepository.findByCoupon(coupon);
-    }
-
-    const discount = findCoupon ? findCoupon.discount : 0;
-
     const articles_authors = articles.map(article => article.author_id);
     if (articles_authors.includes(user_id))
       throw new AppError('Authors can not buy their own articles');
@@ -67,6 +60,21 @@ class CreateOrderService {
       (acc, next) => Number(acc) + Number(next.price),
       0,
     );
+
+    let findCoupon;
+    if (coupon) {
+      findCoupon = await this.couponsRepository.findByCoupon(coupon);
+
+      if (findCoupon) {
+        if (findCoupon.used_by.map(user => user.id).includes(findUser.id))
+          throw new AppError(`Coupon ${coupon} already used.`);
+
+        findCoupon.used_by.push(findUser);
+        await this.couponsRepository.save(findCoupon);
+      }
+    }
+
+    const discount = findCoupon ? findCoupon.discount : 0;
 
     const totalWithDiscount = total - total * discount;
 

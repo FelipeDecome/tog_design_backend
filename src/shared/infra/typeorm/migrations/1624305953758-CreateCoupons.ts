@@ -24,7 +24,7 @@ export class CreateCoupons1624305953758 implements MigrationInterface {
           },
           {
             name: 'expiration_date',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
           },
           {
             name: 'created_at',

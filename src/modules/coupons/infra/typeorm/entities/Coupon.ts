@@ -1,7 +1,10 @@
+import { User } from '@modules/users/infra/typeorm/entities/User';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -18,8 +21,16 @@ class Coupon {
   @Column('numeric')
   discount: number;
 
-  @Column('timestamp')
+  @Column({ type: 'timestamp with time zone' })
   expiration_date: Date;
+
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: 'coupons_to_users',
+    joinColumn: { name: 'coupon_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  })
+  used_by: User[];
 
   @CreateDateColumn()
   created_at: Date;

@@ -1,4 +1,5 @@
 import { AppError } from '@shared/errors/AppError';
+import { isAfter } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 
 import { Coupon } from '../infra/typeorm/entities/Coupon';
@@ -22,15 +23,22 @@ class ShowCouponService {
     private couponsRepository: ICouponsRepository,
   ) {}
 
-  public async execute({ coupon }: IRequest): Promise<IResponse> {
+  public async execute({ coupon, user_id }: IRequest): Promise<IResponse> {
     const findCoupon = await this.couponsRepository.findByCoupon(coupon);
 
     if (!findCoupon) throw new AppError('Coupon not found');
 
+    const usedByUser = await this.couponsRepository.findIfUsedByUser({
+      id: findCoupon.id,
+      user_id,
+    });
+
+    const isExpired = isAfter(findCoupon.expiration_date, new Date());
+
     return {
       coupon: findCoupon,
-      is_valid: true,
-      already_used: false,
+      is_valid: isExpired && !usedByUser,
+      already_used: usedByUser,
     };
   }
 }
