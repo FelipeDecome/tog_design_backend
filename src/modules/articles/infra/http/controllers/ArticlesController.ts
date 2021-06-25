@@ -9,7 +9,8 @@ import { container } from 'tsyringe';
 class ArticlesController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { id: author_id } = request.user;
-    const { title, text, themes, category_id, price } = request.body;
+    const { title, text, coverFileName, themes, category_id, price } =
+      request.body;
 
     const createArticleService = container.resolve(CreateArticleService);
 
@@ -19,7 +20,7 @@ class ArticlesController {
       text,
       themes,
       category_id,
-      coverFileName: request.file.filename,
+      coverFileName,
       price: parseMoneyToNumber(price),
     });
 
