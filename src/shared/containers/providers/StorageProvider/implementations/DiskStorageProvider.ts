@@ -1,4 +1,5 @@
 import { uploadConfig } from '@config/upload';
+import { AppError } from '@shared/errors/AppError';
 import fs from 'fs';
 import path from 'path';
 
@@ -14,13 +15,16 @@ class DiskStorageProvider implements IStorageProvider {
     return file;
   }
 
-  public async deleteFile(file: string): Promise<void> {
-    const filePath = path.resolve(uploadConfig.uploadsFolder, file);
+  public async deleteFile(file: string, is_temp?: boolean): Promise<void> {
+    const filePath = path.resolve(
+      is_temp ? uploadConfig.tmpFolder : uploadConfig.uploadsFolder,
+      file,
+    );
 
     try {
       await fs.promises.stat(filePath);
     } catch {
-      return;
+      throw new AppError('File not found', 404);
     }
 
     await fs.promises.unlink(filePath);
