@@ -15,6 +15,10 @@ const joiConfig: IJoiConfig = {
     'string.guid': '[{#label}] must be a valid GUID',
 
     'array.min': '[{#label}]: must have at least `{#limit}` item(s)',
+
+    'date.base': '[{#label}]: must be a valid date',
+
+    'number.base': '[{#label}]: must be a number',
   },
 };
 
