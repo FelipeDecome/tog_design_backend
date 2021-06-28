@@ -1,3 +1,4 @@
+import { joiConfig } from '@config/joi';
 import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
 import { verifyAuthenticated } from '@modules/users/infra/http/middlewares/verifyAuthenticated';
 import { celebrate, Joi, Segments } from 'celebrate';
@@ -10,18 +11,28 @@ const articlesRoutes = Router();
 const articlesController = new ArticlesController();
 const boughtArticlesController = new BoughtArticlesController();
 
+const JoiStringWithCustomMessages = Joi.string().prefs({
+  messages: joiConfig.customMessages,
+});
+
+const JoiArrayWithCustomMessages = Joi.array().prefs({
+  messages: joiConfig.customMessages,
+});
+
 articlesRoutes.post(
   '/',
   ensureAuthenticated,
   celebrate(
     {
       [Segments.BODY]: {
-        title: Joi.string().required(),
-        text: Joi.string().required(),
-        coverFileName: Joi.string().required(),
-        themes: Joi.array().min(1).items(Joi.string().required()).required(),
-        category_id: Joi.string().uuid().required(),
-        price: Joi.string().required(),
+        title: JoiStringWithCustomMessages.required(),
+        text: JoiStringWithCustomMessages.required(),
+        coverFileName: JoiStringWithCustomMessages.required(),
+        themes: JoiArrayWithCustomMessages.min(1)
+          .items(JoiStringWithCustomMessages)
+          .required(),
+        category_id: JoiStringWithCustomMessages.uuid().required(),
+        price: JoiStringWithCustomMessages.required(),
       },
     },
     { abortEarly: false },
@@ -42,7 +53,7 @@ articlesRoutes.get(
   celebrate(
     {
       [Segments.PARAMS]: {
-        id: Joi.string().uuid().required(),
+        id: JoiStringWithCustomMessages.uuid().required(),
       },
     },
     { abortEarly: false },
