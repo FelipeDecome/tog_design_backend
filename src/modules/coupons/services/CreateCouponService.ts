@@ -1,5 +1,5 @@
 import { AppError } from '@shared/errors/AppError';
-import { isBefore, parseISO } from 'date-fns';
+import { isBefore } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 
 import { Coupon } from '../infra/typeorm/entities/Coupon';
@@ -27,7 +27,7 @@ class CreateCouponService {
 
     if (findCoupon) throw new AppError('Coupon name already in use.');
 
-    const parsedExpirationDate = parseISO(expiration_date);
+    const parsedExpirationDate = new Date(expiration_date);
 
     const expiresInPast = isBefore(parsedExpirationDate, new Date());
 
