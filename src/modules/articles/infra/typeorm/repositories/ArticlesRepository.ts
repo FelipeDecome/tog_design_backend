@@ -23,13 +23,12 @@ class ArticlesRepository implements IArticlesRepository {
       where: {
         title,
       },
-      relations: ['author', 'category'],
     });
   }
 
   public async findById(id: string): Promise<Article | undefined> {
     return this.ormRepository.findOne(id, {
-      relations: ['author', 'category'],
+      relations: ['author', 'category', 'themes'],
     });
   }
 
@@ -58,12 +57,13 @@ class ArticlesRepository implements IArticlesRepository {
         'author.name as author_name',
         'article.title as title',
         'article.text as text',
-        'article.themes as themes',
+        'theme',
         'article.cover as cover',
         'order.created_at as bought_at',
       ])
       .leftJoin('article.author', 'author')
       .leftJoin('article.orders', 'order')
+      .leftJoin('article.themes', 'theme')
       .where('order.user_id = :id', { id: user_id })
       .getRawMany();
   }
@@ -73,7 +73,7 @@ class ArticlesRepository implements IArticlesRepository {
       order: {
         created_at: 'DESC',
       },
-      relations: ['author'],
+      relations: ['author', 'themes'],
     });
   }
 

@@ -6,6 +6,8 @@ import { IStorageProvider } from '@shared/containers/providers/StorageProvider/m
 import { AppError } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
+import { IThemesRepository } from '../repositories/IThemesRepository';
+
 interface IRequest {
   author_id: string;
   title: string;
@@ -27,6 +29,9 @@ class CreateArticleService {
 
     @inject('CategoriesRepository')
     private categoriesRepository: ICategoriesRepository,
+
+    @inject('ThemesRepository')
+    private themesRepository: IThemesRepository,
 
     @inject('StorageProvider')
     private storageProvider: IStorageProvider,
@@ -53,7 +58,20 @@ class CreateArticleService {
 
     if (findArticle) throw new AppError('Title already in use.');
 
-    const parsedThemes = themes.sort().join('|');
+    const findThemes = await this.themesRepository.findByNames(themes);
+
+    const parsedThemes = themes.map(theme => {
+      const themeExists = findThemes.find(
+        findTheme =>
+          !findTheme.name.localeCompare(theme, undefined, {
+            sensitivity: 'base',
+          }),
+      );
+
+      if (!themeExists) return { name: theme };
+
+      return themeExists;
+    });
 
     const filename = await this.storageProvider.saveFile(coverFileName);
 

@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryColumn,
@@ -13,6 +14,7 @@ import {
 import { v4 as uuid } from 'uuid';
 
 import { Category } from './Category';
+import { Theme } from './Theme';
 
 @Entity('articles')
 class Article {
@@ -32,8 +34,13 @@ class Article {
   @Column()
   text: string;
 
-  @Column()
-  themes: string;
+  @ManyToMany(() => Theme, { cascade: ['insert'] })
+  @JoinTable({
+    name: 'articles_to_themes',
+    joinColumn: { name: 'article_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'theme_id', referencedColumnName: 'id' },
+  })
+  themes: Theme[];
 
   @Column()
   cover: string;

@@ -9,11 +9,16 @@ interface IRequest {
   id: string;
 }
 
+interface IThemeResponse {
+  id: string;
+  name: string;
+}
+
 interface IArticleReponse
   extends Omit<Omit<Omit<Article, 'themes'>, 'author'>, 'cover'> {
   author_name: string;
   cover_url: string;
-  themes: string[];
+  themes: IThemeResponse[];
 }
 
 interface IResponse {
@@ -51,7 +56,10 @@ class ShowArticleService {
       article: {
         ...rest,
         author_name: author.name,
-        themes: article.themes.split('|'),
+        themes: article.themes.map(theme => ({
+          id: theme.id,
+          name: theme.name,
+        })),
         text,
         cover_url: `${process.env.API_URL}/files/${cover}`,
       },

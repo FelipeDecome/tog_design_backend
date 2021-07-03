@@ -25,10 +25,6 @@ export class CreateArticles1623794279965 implements MigrationInterface {
             type: 'varchar',
           },
           {
-            name: 'themes',
-            type: 'varchar',
-          },
-          {
             name: 'cover',
             type: 'varchar',
           },
