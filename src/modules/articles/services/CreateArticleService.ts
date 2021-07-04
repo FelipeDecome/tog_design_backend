@@ -1,4 +1,3 @@
-import { Article } from '@modules/articles/infra/typeorm/entities/Article';
 import { IArticlesRepository } from '@modules/articles/repositories/IArticlesRepository';
 import { ICategoriesRepository } from '@modules/articles/repositories/ICategoriesRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository';
@@ -16,6 +15,24 @@ interface IRequest {
   category_id: string;
   coverFileName: string;
   price: number;
+}
+
+interface ICategoryResponse {
+  id: string;
+  name: string;
+}
+
+interface IThemeResponse {
+  id: string;
+  name: string;
+}
+
+interface IResponse {
+  id: string;
+  title: string;
+  text: string;
+  category: ICategoryResponse;
+  themes: IThemeResponse[];
 }
 
 @injectable()
@@ -45,7 +62,7 @@ class CreateArticleService {
     category_id,
     coverFileName,
     price,
-  }: IRequest): Promise<Article> {
+  }: IRequest): Promise<IResponse> {
     const findAuthor = await this.usersRepository.findById(author_id);
 
     if (!findAuthor) throw new AppError('Author not found.');
@@ -85,7 +102,7 @@ class CreateArticleService {
       price,
     });
 
-    return article;
+    return article.articleToClient();
   }
 }
 

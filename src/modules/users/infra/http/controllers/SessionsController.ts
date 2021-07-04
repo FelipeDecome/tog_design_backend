@@ -13,6 +13,6 @@ export default class SessionsController {
       password,
     });
 
-    return response.status(201).json({ user: user.userToClient(), token });
+    return response.status(201).json({ user, token });
   }
 }

@@ -14,6 +14,6 @@ export default class UsersController {
       password,
     });
 
-    return response.status(201).json(user.userToClient());
+    return response.status(201).json(user);
   }
 }

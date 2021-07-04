@@ -51,21 +51,11 @@ class ArticlesRepository implements IArticlesRepository {
   public async findAllUsersBoughtArticles(user_id: string): Promise<Article[]> {
     return this.ormRepository
       .createQueryBuilder('article')
-      .select([
-        'article.id as id',
-        'author.id as author_id',
-        'author.name as author_name',
-        'article.title as title',
-        'article.text as text',
-        'theme',
-        'article.cover as cover',
-        'order.created_at as bought_at',
-      ])
       .leftJoin('article.author', 'author')
       .leftJoin('article.orders', 'order')
       .leftJoin('article.themes', 'theme')
       .where('order.user_id = :id', { id: user_id })
-      .getRawMany();
+      .getMany();
   }
 
   public async findAllArticles(): Promise<Article[]> {

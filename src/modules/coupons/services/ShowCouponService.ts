@@ -2,7 +2,6 @@ import { AppError } from '@shared/errors/AppError';
 import { isAfter } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 
-import { Coupon } from '../infra/typeorm/entities/Coupon';
 import { ICouponsRepository } from '../repositories/ICouponsRepository';
 
 interface IRequest {
@@ -11,7 +10,10 @@ interface IRequest {
 }
 
 interface IResponse {
-  coupon: Coupon;
+  id: string;
+  coupon: string;
+  discount: number;
+  expiration_date: Date;
   is_valid: boolean;
   already_used: boolean;
 }
@@ -36,7 +38,7 @@ class ShowCouponService {
     const isExpired = isAfter(findCoupon.expiration_date, new Date());
 
     return {
-      coupon: findCoupon,
+      ...findCoupon.couponToClient(),
       is_valid: isExpired && !usedByUser,
       already_used: usedByUser,
     };
