@@ -2,11 +2,20 @@ import { IUsersRepository } from '@modules/users/repositories/IUsersRepository';
 import { AppError } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
-import { Article } from '../infra/typeorm/entities/Article';
+// import { Article } from '../infra/typeorm/entities/Article';
 import { IArticlesRepository } from '../repositories/IArticlesRepository';
 
 interface IRequest {
   user_id: string;
+}
+
+interface IResponse {
+  id: string;
+  title: string;
+  text: string;
+  price: number;
+  author_id: string;
+  cover_url: string;
 }
 
 @injectable()
@@ -19,7 +28,7 @@ class ListUserBoughtArticlesSevice {
     private usersRepository: IUsersRepository,
   ) {}
 
-  public async execute({ user_id }: IRequest): Promise<Article[]> {
+  public async execute({ user_id }: IRequest): Promise<IResponse[]> {
     const findUser = await this.usersRepository.findById(user_id);
 
     if (!findUser) throw new AppError('User not found');
@@ -27,7 +36,7 @@ class ListUserBoughtArticlesSevice {
     const boughtArticles =
       await this.articlesRepository.findAllUsersBoughtArticles(user_id);
 
-    return boughtArticles;
+    return boughtArticles.map(article => article.articleToClient());
   }
 }
 

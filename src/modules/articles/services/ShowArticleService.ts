@@ -1,4 +1,3 @@
-import { Article } from '@modules/articles/infra/typeorm/entities/Article';
 import { IArticlesRepository } from '@modules/articles/repositories/IArticlesRepository';
 import { AppError } from '@shared/errors/AppError';
 import { limitTextSize } from '@shared/utils/limitTextSize';
@@ -9,15 +8,25 @@ interface IRequest {
   id: string;
 }
 
+interface ICategoryResponse {
+  id: string;
+  name: string;
+}
+
 interface IThemeResponse {
   id: string;
   name: string;
 }
 
-interface IArticleReponse
-  extends Omit<Omit<Omit<Article, 'themes'>, 'author'>, 'cover'> {
+interface IArticleReponse {
+  id: string;
+  title: string;
+  text: string;
+  price: number;
+  author_id: string;
   author_name: string;
   cover_url: string;
+  category: ICategoryResponse;
   themes: IThemeResponse[];
 }
 
@@ -38,7 +47,13 @@ class ShowArticleService {
 
     if (!article) throw new AppError('Article not found.');
 
-    const { author, cover, ...rest } = article;
+    const {
+      text: article_text,
+      themes,
+      category,
+      author,
+      ...rest
+    } = article.articleToClient();
 
     let findBoughtArticle;
 
@@ -49,19 +64,19 @@ class ShowArticleService {
       });
 
     const text = findBoughtArticle
-      ? article.text
-      : `${limitTextSize(article.text, 1 / 5)}...`;
+      ? article_text
+      : `${limitTextSize(article_text, 1 / 5)}...`;
 
     return {
       article: {
         ...rest,
         author_name: author.name,
-        themes: article.themes.map(theme => ({
-          id: theme.id,
-          name: theme.name,
-        })),
         text,
-        cover_url: `${process.env.API_URL}/files/${cover}`,
+        category: {
+          id: category.id,
+          name: category.name,
+        },
+        themes: themes.map(theme => theme.themeToClient()),
       },
       bought: !!findBoughtArticle,
     };

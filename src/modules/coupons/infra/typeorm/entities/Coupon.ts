@@ -10,6 +10,12 @@ import {
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+interface ICouponToClient {
+  id: string;
+  coupon: string;
+  discount: number;
+  expiration_date: Date;
+}
 @Entity('coupons')
 class Coupon {
   @PrimaryColumn()
@@ -40,6 +46,17 @@ class Coupon {
 
   constructor() {
     if (!this.id) this.id = uuid();
+  }
+
+  public couponToClient(): ICouponToClient {
+    const { id, coupon, discount, expiration_date } = this;
+
+    return {
+      id,
+      coupon,
+      discount: Number(discount),
+      expiration_date,
+    };
   }
 }
 

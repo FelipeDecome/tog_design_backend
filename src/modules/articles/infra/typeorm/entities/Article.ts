@@ -16,6 +16,18 @@ import { v4 as uuid } from 'uuid';
 import { Category } from './Category';
 import { Theme } from './Theme';
 
+interface IArticleToClient {
+  id: string;
+  title: string;
+  text: string;
+  price: number;
+  author_id: string;
+  author: User;
+  cover_url: string;
+  category: Category;
+  themes: Theme[];
+}
+
 @Entity('articles')
 class Article {
   @PrimaryColumn('uuid')
@@ -66,6 +78,32 @@ class Article {
 
   constructor() {
     if (!this.id) this.id = uuid();
+  }
+
+  public articleToClient(): IArticleToClient {
+    const {
+      id,
+      title,
+      text,
+      price,
+      author_id,
+      author,
+      category,
+      themes,
+      cover,
+    } = this;
+
+    return {
+      id,
+      title,
+      text,
+      price: Number(price),
+      author_id,
+      author,
+      category,
+      themes,
+      cover_url: `${process.env.APP_IMAGES_URL}/${cover}`,
+    };
   }
 }
 

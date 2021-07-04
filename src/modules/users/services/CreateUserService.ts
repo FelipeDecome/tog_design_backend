@@ -1,7 +1,6 @@
 import { AppError } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
-import { User } from '../infra/typeorm/entities/User';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 import { IUsersRepository } from '../repositories/IUsersRepository';
 
@@ -9,6 +8,12 @@ interface IRequest {
   name: string;
   email: string;
   password: string;
+}
+
+interface IResponse {
+  id: string;
+  name: string;
+  email: string;
 }
 
 @injectable()
@@ -21,7 +26,11 @@ class CreateUserService {
     private hashProvider: IHashProvider,
   ) {}
 
-  public async execute({ name, email, password }: IRequest): Promise<User> {
+  public async execute({
+    name,
+    email,
+    password,
+  }: IRequest): Promise<IResponse> {
     const emailAlreadyInUse = await this.usersRepository.findByEmail(email);
 
     if (emailAlreadyInUse) throw new AppError('Email already in use');
@@ -36,7 +45,7 @@ class CreateUserService {
 
     /* Enviar confirmação do email */
 
-    return user;
+    return user.userToClient();
   }
 }
 

@@ -2,13 +2,19 @@ import { AppError } from '@shared/errors/AppError';
 import { isBefore } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 
-import { Coupon } from '../infra/typeorm/entities/Coupon';
 import { ICouponsRepository } from '../repositories/ICouponsRepository';
 
 interface IRequest {
   coupon_name: string;
   discount: number;
   expiration_date: string;
+}
+
+interface IResponse {
+  id: string;
+  coupon: string;
+  discount: number;
+  expiration_date: Date;
 }
 
 @injectable()
@@ -22,7 +28,7 @@ class CreateCouponService {
     coupon_name,
     discount,
     expiration_date,
-  }: IRequest): Promise<Coupon> {
+  }: IRequest): Promise<IResponse> {
     const findCoupon = await this.couponsRepository.findByCoupon(coupon_name);
 
     if (findCoupon) throw new AppError('Coupon name already in use.');
@@ -42,7 +48,7 @@ class CreateCouponService {
       expiration_date: parsedExpirationDate,
     });
 
-    return coupon;
+    return coupon.couponToClient();
   }
 }
 

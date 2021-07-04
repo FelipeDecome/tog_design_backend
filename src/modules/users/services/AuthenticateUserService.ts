@@ -1,7 +1,6 @@
 import { AppError } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
-import { User } from '../infra/typeorm/entities/User';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 import { IJWTProvider } from '../providers/JWTProvider/models/IJWTProvider';
 import { IUsersRepository } from '../repositories/IUsersRepository';
@@ -11,8 +10,13 @@ interface IRequest {
   password: string;
 }
 
+interface IUserResponse {
+  id: string;
+  name: string;
+  email: string;
+}
 interface IResponse {
-  user: User;
+  user: IUserResponse;
   token: string;
 }
 
@@ -46,7 +50,7 @@ class AuthenticateUserService {
     const token = await this.JWTProvider.generate(user.id);
 
     return {
-      user,
+      user: user.userToClient(),
       token,
     };
   }

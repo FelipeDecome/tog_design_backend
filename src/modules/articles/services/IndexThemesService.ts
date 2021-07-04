@@ -19,7 +19,7 @@ class IndexThemesService {
   public async execute(): Promise<TResponse> {
     const themes = await this.themesRepository.findAll();
 
-    return themes.map(theme => ({ id: theme.id, name: theme.name }));
+    return themes.map(theme => theme.themeToClient());
   }
 }
 

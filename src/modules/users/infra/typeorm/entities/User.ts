@@ -7,6 +7,12 @@ import {
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+interface IUserToClient {
+  id: string;
+  name: string;
+  email: string;
+}
+
 @Entity('users')
 class User {
   @PrimaryColumn('uuid')
@@ -31,10 +37,14 @@ class User {
     if (!this.id) this.id = uuid();
   }
 
-  public userToClient(): Omit<User, 'password'> {
-    const { password, ...rest } = this;
+  public userToClient(): IUserToClient {
+    const { id, name, email } = this;
 
-    return rest;
+    return {
+      id,
+      name,
+      email,
+    };
   }
 }
 
