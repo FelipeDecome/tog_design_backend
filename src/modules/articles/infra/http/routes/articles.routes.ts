@@ -31,7 +31,6 @@ articlesRoutes.post(
         themes: JoiArrayWithCustomMessages.min(1)
           .items(JoiStringWithCustomMessages)
           .required(),
-        category_id: JoiStringWithCustomMessages.uuid().required(),
         price: JoiStringWithCustomMessages.required(),
       },
     },

@@ -1,5 +1,4 @@
 import { IArticlesRepository } from '@modules/articles/repositories/IArticlesRepository';
-import { ICategoriesRepository } from '@modules/articles/repositories/ICategoriesRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository';
 import { IStorageProvider } from '@shared/containers/providers/StorageProvider/models/IStorageProvider';
 import { AppError } from '@shared/errors/AppError';
@@ -12,7 +11,6 @@ interface IRequest {
   title: string;
   text: string;
   themes: string[];
-  category_id: string;
   coverFileName: string;
   price: number;
 }
@@ -38,9 +36,6 @@ class CreateArticleService {
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
 
-    @inject('CategoriesRepository')
-    private categoriesRepository: ICategoriesRepository,
-
     @inject('ThemesRepository')
     private themesRepository: IThemesRepository,
 
@@ -53,17 +48,12 @@ class CreateArticleService {
     title,
     text,
     themes,
-    category_id,
     coverFileName,
     price,
   }: IRequest): Promise<IResponse> {
     const findAuthor = await this.usersRepository.findById(author_id);
 
     if (!findAuthor) throw new AppError('Author not found.');
-
-    const findCategory = await this.categoriesRepository.findById(category_id);
-
-    if (!findCategory) throw new AppError('Category not found.');
 
     const findArticle = await this.articlesRepository.findByTitle(title);
 
@@ -92,7 +82,6 @@ class CreateArticleService {
       text,
       cover: filename,
       themes: parsedThemes,
-      category_id,
       price,
     });
 

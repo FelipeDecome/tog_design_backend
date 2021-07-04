@@ -28,7 +28,7 @@ class ArticlesRepository implements IArticlesRepository {
 
   public async findById(id: string): Promise<Article | undefined> {
     return this.ormRepository.findOne(id, {
-      relations: ['author', 'category', 'themes'],
+      relations: ['author', 'themes'],
     });
   }
 
@@ -63,7 +63,7 @@ class ArticlesRepository implements IArticlesRepository {
       order: {
         created_at: 'DESC',
       },
-      relations: ['author', 'category', 'themes'],
+      relations: ['author', 'themes'],
     });
   }
 

@@ -1,5 +1,4 @@
 import { articlesRoutes } from '@modules/articles/infra/http/routes/articles.routes';
-import { categoriesRoutes } from '@modules/articles/infra/http/routes/categories.routes';
 import { themesRoutes } from '@modules/articles/infra/http/routes/themes.routes';
 import { couponsRoutes } from '@modules/coupons/infra/http/routes/coupons.routes';
 import { ordersRoutes } from '@modules/orders/infra/http/routes/orders.routes';
@@ -14,7 +13,6 @@ routes.use('/users', usersRoutes);
 routes.use('/sessions', sessionsRoutes);
 
 routes.use('/articles', articlesRoutes);
-routes.use('/categories', categoriesRoutes);
 routes.use('/themes', themesRoutes);
 
 routes.use('/orders', ordersRoutes);

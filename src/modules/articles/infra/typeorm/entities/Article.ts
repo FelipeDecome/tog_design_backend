@@ -13,7 +13,6 @@ import {
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { Category } from './Category';
 import { Theme } from './Theme';
 
 interface IArticleToClient {
@@ -24,7 +23,6 @@ interface IArticleToClient {
   author_id: string;
   author: User;
   cover_url: string;
-  category: Category;
   themes: Theme[];
 }
 
@@ -57,18 +55,11 @@ class Article {
   @Column()
   cover: string;
 
-  @Column('uuid')
-  category_id: string;
-
   @Column('numeric', { precision: 19, scale: 4 })
   price: number;
 
   @ManyToMany(() => Order, order => order.articles)
   orders: Order[];
-
-  @ManyToOne(() => Category)
-  @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
-  category: Category;
 
   @CreateDateColumn()
   created_at: Date;
@@ -81,17 +72,7 @@ class Article {
   }
 
   public articleToClient(): IArticleToClient {
-    const {
-      id,
-      title,
-      text,
-      price,
-      author_id,
-      author,
-      category,
-      themes,
-      cover,
-    } = this;
+    const { id, title, text, price, author_id, author, themes, cover } = this;
 
     return {
       id,
@@ -100,7 +81,6 @@ class Article {
       price: Number(price),
       author_id,
       author,
-      category,
       themes,
       cover_url: `${process.env.APP_IMAGES_URL}/${cover}`,
     };

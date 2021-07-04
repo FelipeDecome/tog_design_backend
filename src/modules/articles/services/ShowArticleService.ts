@@ -8,11 +8,6 @@ interface IRequest {
   id: string;
 }
 
-interface ICategoryResponse {
-  id: string;
-  name: string;
-}
-
 interface IThemeResponse {
   id: string;
   name: string;
@@ -26,7 +21,6 @@ interface IArticleReponse {
   author_id: string;
   author_name: string;
   cover_url: string;
-  category: ICategoryResponse;
   themes: IThemeResponse[];
 }
 
@@ -50,7 +44,6 @@ class ShowArticleService {
     const {
       text: article_text,
       themes,
-      category,
       author,
       ...rest
     } = article.articleToClient();
@@ -63,19 +56,17 @@ class ShowArticleService {
         user_id,
       });
 
-    const text = findBoughtArticle
-      ? article_text
-      : `${limitTextSize(article_text, 1 / 5)}...`;
+    const text =
+      findBoughtArticle || article.author_id === user_id
+        ? article_text
+        : `${limitTextSize(article_text, 1 / 5)}...`;
 
     return {
       article: {
         ...rest,
         author_name: author.name,
         text,
-        category: {
-          id: category.id,
-          name: category.name,
-        },
+
         themes: themes.map(theme => theme.themeToClient()),
       },
       bought: !!findBoughtArticle,

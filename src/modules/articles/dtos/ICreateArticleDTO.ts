@@ -6,7 +6,6 @@ interface ICreateArticleDTO {
   text: string;
   cover: string;
   themes: Partial<Theme>[];
-  category_id: string;
   price: number;
 }
 

@@ -29,10 +29,6 @@ export class CreateArticles1623794279965 implements MigrationInterface {
             type: 'varchar',
           },
           {
-            name: 'category_id',
-            type: 'uuid',
-          },
-          {
             name: 'price',
             type: 'numeric',
             precision: 19,
@@ -54,13 +50,6 @@ export class CreateArticles1623794279965 implements MigrationInterface {
             columnNames: ['author_id'],
             referencedColumnNames: ['id'],
             referencedTableName: 'users',
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          },
-          {
-            columnNames: ['category_id'],
-            referencedColumnNames: ['id'],
-            referencedTableName: 'categories',
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
